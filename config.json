@@ -1,0 +1,4 @@
+{
+    "mongodb-connection-string": "MY_CONNECTION_STRING",
+    "secret-token": "MY_RANDOM_SECRET_TOKEN"
+}
