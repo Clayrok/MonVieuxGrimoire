@@ -1,0 +1,1 @@
+Before starting the server, edit the config.json file to add your connection string and a strong randomized string as secret token.
