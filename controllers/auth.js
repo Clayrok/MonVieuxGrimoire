@@ -5,6 +5,11 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 exports.signup = (req, res) => {
+    if (!validateEmail(req.body.email)) {
+        res.status(400).json("Adresse email non conforme.");
+        return;
+    }
+
     bcrypt.hash(req.body.password, 10)
         .then(hashedPassword => {
             const user = new User({
@@ -24,6 +29,11 @@ exports.signup = (req, res) => {
 };
 
 exports.login = (req, res) => {
+    if (!validateEmail(req.body.email)) {
+        res.status(400).json("Adresse email non conforme.");
+        return;
+    }
+
     const loginErrorMessage = 'Identifiant/Mot de passe incorrect.';
 
     User.findOne({ email: req.body.email })
@@ -53,3 +63,8 @@ exports.login = (req, res) => {
         })
         .catch(error => res.status(500).json({ error }));
 };
+
+function validateEmail(email) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+}
