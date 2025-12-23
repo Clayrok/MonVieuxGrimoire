@@ -4,10 +4,9 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/User');
 
-exports.signup = (req, res) => {
+exports.signup = (req, res, next) => {
     if (!validateEmail(req.body.email)) {
-        res.status(400).json("Adresse email non conforme.");
-        return;
+        return next({ status: 400, message: "Adresse email non conforme." });
     }
 
     bcrypt.hash(req.body.password, 10)
@@ -19,19 +18,18 @@ exports.signup = (req, res) => {
 
             user.save()
                 .then(() => {
-                    res.status(201).json("Utilisateur créé.");
+                    res.status(201).json({ message: "Utilisateur créé." });
                 })
                 .catch(error => {
-                    res.status(400).json({ error });
+                    next({ status: 500, message: error.message });
                 });
         })
-        .catch(error => res.status(500).json({ error }));
+        .catch(error => next({ status: 500, message: error.message }));
 };
 
-exports.login = (req, res) => {
+exports.login = (req, res, next) => {
     if (!validateEmail(req.body.email)) {
-        res.status(400).json("Adresse email non conforme.");
-        return;
+        return next({ status: 400, message: "Adresse email non conforme." });
     }
 
     const loginErrorMessage = 'Identifiant/Mot de passe incorrect.';
@@ -39,16 +37,16 @@ exports.login = (req, res) => {
     User.findOne({ email: req.body.email })
         .then(user => {
             if (!user) {
-                res.status(401).json({ message: loginErrorMessage });
+                return next({ status: 401, message: loginErrorMessage });
             }
             else {
                 bcrypt.compare(req.body.password, user.password)
                     .then(valid => {
                         if (!valid) {
-                            res.status(401).json({ message: loginErrorMessage });
+                            return next({ status: 401, message: loginErrorMessage });
                         }
                         else {
-                            res.status(200).json({
+                            return res.status(200).json({
                                 userId: user._id,
                                 token: jwt.sign(
                                     { userId: user._id},
@@ -58,13 +56,14 @@ exports.login = (req, res) => {
                             });
                         }
                     })
-                    .catch(error => res.status(500).json({ error }))
+                    .catch(error => next({ status: 500, message: error.message }))
             }
         })
-        .catch(error => res.status(500).json({ error }));
+        .catch(error => next({ status: 500, message: error.message }));
 };
 
 function validateEmail(email) {
+    if (!email) return null;
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
 }

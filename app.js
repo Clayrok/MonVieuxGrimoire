@@ -1,8 +1,11 @@
 const config = require("./config.json")
+
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('./middlewares/cors');
 const path = require('path');
+
+const cors = require('./middlewares/cors');
+const errorHandler = require('./middlewares/errorHandler')
 
 const authRoutes = require('./routes/auth');
 const bookRoutes = require('./routes/books');
@@ -18,8 +21,9 @@ app.use(express.json());
 app.use(cors);
 
 app.use('/upload', express.static(path.join(__dirname, 'upload')));
-
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
+
+app.use(errorHandler);
 
 module.exports = app;
