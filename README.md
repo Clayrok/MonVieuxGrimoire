@@ -1,5 +1,5 @@
 # Configuration
-## config.js
+## config.json
 Before starting the server, edit the config.json file to: 
 - Add your connection string
 - Add a strong randomized string as secret token
