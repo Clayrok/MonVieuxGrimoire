@@ -1,8 +1,9 @@
+const config = require("../config.json");
+
 module.exports = (req, res, next) => {
-    const allowedOrigins = ['http://localhost:3000', 'http://localhost:4000'];
     const origin = req.headers.origin;
 
-    if (allowedOrigins.includes(origin)) {
+    if (config["allowed-origins"].includes(origin)) {
         res.setHeader('Access-Control-Allow-Origin', origin);
     }
 
