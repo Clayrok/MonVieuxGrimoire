@@ -1,10 +1,22 @@
 const express = require('express');
-const auth = require('../middlewares/auth');
-const router = express.Router();
+const { body, validationResult } = require('express-validator');
+
+const bruteforce = require('../middlewares/bruteForce');
 
 const authController = require('../controllers/auth');
 
-router.post('/signup', authController.signup);
-router.post('/login', authController.login);
+const router = express.Router();
+
+router.post('/signup', 
+    bruteforce.prevent,
+    body('email').isEmail().normalizeEmail(),
+    body('password').isLength({ min: 8 }),
+    authController.signup);
+
+router.post('/login',
+    bruteforce.prevent,
+    body('email').isEmail().normalizeEmail(),
+    body('password').isLength({ min: 8 }),
+    authController.login);
 
 module.exports = router;
