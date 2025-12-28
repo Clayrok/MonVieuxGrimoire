@@ -1,4 +1,8 @@
 {
-    "mongodb-connection-string": "MY_CONNECTION_STRING",
-    "secret-token": "MY_RANDOM_SECRET_TOKEN"
+    "mongodb-connection-string": "MONGODB_CONNECTION_STRING",
+    "secret-token": "MY_RANDOM_SECRET_TOKEN",
+    "allowed-origins": [
+        "http://localhost:3000",
+        "http://localhost:4000"
+    ]
 }
